@@ -29,17 +29,21 @@ function Home() {
     setUserCreditBalance(data.balance);
   };
 
+  useEffect(() => {
+    getUserCreditBalance();
+  }, [messageList]);
+
   // Persist all messages to localStorage
   useEffect(() => {
     // Only load messages from localStorage if there are no messages in state
     if (messageList.length === 0) {
       const messages = JSON.parse(localStorage.getItem("messages") || "[]");
-      setMessageList(messages);
-      return;
+      if (messages.length > 0) {
+        setMessageList(messages);
+      }
     }
 
     localStorage.setItem("messages", JSON.stringify(messageList));
-    getUserCreditBalance();
   }, [messageList]);
 
   const handleSend = async (message: string) => {
