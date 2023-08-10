@@ -29,10 +29,6 @@ function Home() {
     setUserCreditBalance(data.balance);
   };
 
-  useEffect(() => {
-    getUserCreditBalance();
-  }, [messageList]);
-
   // Persist all messages to localStorage
   useEffect(() => {
     // Only load messages from localStorage if there are no messages in state
@@ -43,6 +39,7 @@ function Home() {
     }
 
     localStorage.setItem("messages", JSON.stringify(messageList));
+    getUserCreditBalance();
   }, [messageList]);
 
   const handleSend = async (message: string) => {
