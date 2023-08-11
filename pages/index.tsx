@@ -110,6 +110,10 @@ function Home() {
                     <div className="text-xl font-bold text-center">
                       Chipps: {userCreditBalance}
                     </div>
+                    <div className="text-xl font-bold text-center">
+                      {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+                      <a href="/api/auth/logout">Logout</a>
+                    </div>
                   </div>
                 </ConversationHeader.Actions>
               </ConversationHeader>
