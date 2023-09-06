@@ -27,6 +27,7 @@ export default async function handler(
         res.status(500).json({
           error: "Error getting balance",
         });
+        return;
       }
 
       res.status(200).json({ balance });
