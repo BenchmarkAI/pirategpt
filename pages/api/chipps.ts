@@ -23,6 +23,11 @@ export default async function handler(
       }
 
       const balance = await chippUser?.getChipps();
+      if (!balance) {
+        res.status(500).json({
+          error: "Error getting balance",
+        });
+      }
 
       res.status(200).json({ balance });
       break;
