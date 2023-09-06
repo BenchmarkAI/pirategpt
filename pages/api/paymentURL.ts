@@ -13,7 +13,13 @@ export default async function handler(
   switch (req.method) {
     case "GET":
       const { userId } = req.query;
-      const paymentURL = await chipp.getPaymentURLForUser(userId as string);
+
+      const chippUser = await chipp.getUser({ userId: userId as string });
+      const paymentURL = await chippUser?.getPaymentURL({
+        // Return the user to the homepage after they've paid
+        // BASE_URL is set in .env to be the URL of the homepage
+        returnToUrl: process.env.BASE_URL as string,
+      });
 
       res.status(200).json({ paymentURL });
       break;

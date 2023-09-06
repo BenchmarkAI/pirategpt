@@ -17,19 +17,22 @@ export default async function handler(
       const session = await getSession(req, res);
       const userId = session?.user?.sub;
 
-      const userChippBalance = await chipp.getUserCredits(userId as string);
+      let chippUser = await chipp.getUser({ userId });
+      if (!chippUser) {
+        chippUser = await chipp.createUser({ userId });
+      }
 
-      res.status(200).json({ balance: userChippBalance });
+      const balance = await chippUser?.getChipps();
+
+      res.status(200).json({ balance });
       break;
     }
     case "POST": {
       const session = await getSession(req, res);
       const userId = session?.user?.sub;
 
-      await chipp.deductCreditsFromUser({
-        userId,
-        quantity: 1,
-      });
+      const chippUser = await chipp.getUser({ userId });
+      await chippUser?.deductChipps(1);
 
       res.status(200).json({ message: "Charged 1 credit" });
       break;
