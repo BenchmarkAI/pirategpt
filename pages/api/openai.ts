@@ -21,11 +21,21 @@ export default async function handler(
     const session = await getSession(req, res);
     const userId = session?.user?.sub;
 
+    const user = await chipp.getUser({ userId: userId as string });
+    if (!user) {
+      res.status(400).json({ error: "User not found" });
+      return;
+    }
+
     // See if the user has enough credits to send a message
-    const userChippBalance = await chipp.getUserCredits(userId as string);
+    const userChippBalance = await user.getChipps();
     if (userChippBalance < 1) {
       // Get a payment URL for the user to add more credits
-      const paymentURL = await chipp.getPaymentURLForUser(userId as string);
+      const paymentURL = await user.getPaymentURL({
+        // Return the user to the homepage after they've paid
+        // BASE_URL is set in .env to be the URL of the homepage
+        returnToUrl: process.env.BASE_URL as string,
+      });
       res.status(200).json({
         content: `You don't have enough credits to send a message. Please add more credits at ${paymentURL}`,
       });
@@ -55,10 +65,7 @@ export default async function handler(
 
     // Deduct 1 credit from the user only if the message is sent successfully
     // so that we don't charge the user if the message fails to send
-    await chipp.deductCreditsFromUser({
-      userId,
-      quantity: 1,
-    });
+    await user.deductChipps(1);
 
     res.status(200).json({
       content: completion.data.choices[0].message?.content,

@@ -24,7 +24,7 @@ function Home() {
   const { user, isLoading } = useUser();
 
   const getUserCreditBalance = async () => {
-    const response = await fetch("/api/chipps?userId=hunterhod");
+    const response = await fetch("/api/chipps");
     const data = await response.json();
     setUserCreditBalance(data.balance);
   };
