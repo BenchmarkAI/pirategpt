@@ -1,7 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import Chipp from "chipp";
-import { get } from "http";
 import { getSession } from "@auth0/nextjs-auth0";
 
 const chipp = new Chipp({
