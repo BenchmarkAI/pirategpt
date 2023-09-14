@@ -6,6 +6,7 @@ export default handleCredits({
     const session = await getSession(req, res);
     if (!session?.user.sub) {
       res.status(401).json({ error: "Unauthorized" });
+      return "";
     }
 
     return session?.user.sub as string;
