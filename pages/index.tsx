@@ -8,29 +8,28 @@ import {
   MessageModel,
   ConversationHeader,
   Avatar,
-  VoiceCallButton,
-  VideoCallButton,
-  InfoButton,
 } from "@chatscope/chat-ui-kit-react";
 import { useEffect, useState } from "react";
 import { MessageDirection } from "@chatscope/chat-ui-kit-react/src/types/unions";
 import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0/client";
+import { useUserCredits } from "@chipp/nextjs-chipp/client";
 
 function Home() {
-  const [userCreditBalance, setUserCreditBalance] = useState(0);
   const [messageList, setMessageList] = useState<MessageModel[]>([]);
   const [msgInputValue, setMsgInputValue] = useState("");
   const [responseGenerating, setResponseGenerating] = useState(false);
   const { user, isLoading } = useUser();
 
-  const getUserCreditBalance = async () => {
-    const response = await fetch("/api/chipps");
-    const data = await response.json();
-    setUserCreditBalance(data.balance);
-  };
+  const {
+    balance,
+    refreshBalance,
+    isLoading: balanceLoading,
+  } = useUserCredits({
+    userId: user?.sub,
+  });
 
   useEffect(() => {
-    getUserCreditBalance();
+    refreshBalance();
   }, [messageList]);
 
   // Persist all messages to localStorage
@@ -107,8 +106,12 @@ function Home() {
                     <div className="text-xl font-bold text-center">
                       {isLoading ? "Loading..." : `User: ${user?.name}`}
                     </div>
-                    <div className="text-xl font-bold text-center">
-                      Chipps: {userCreditBalance}
+                    <div
+                      className={`text-xl font-bold text-center ${
+                        balanceLoading ? "opacity-50" : ""
+                      }`}
+                    >
+                      Chipps: {balanceLoading ? "loading..." : balance}
                     </div>
                     <div className="text-xl font-bold text-center">
                       {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
