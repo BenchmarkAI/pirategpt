@@ -21,12 +21,10 @@ function Home() {
   const { user, isLoading } = useUser();
 
   const {
-    balance,
+    userCredits,
     refreshBalance,
     isLoading: balanceLoading,
-  } = useUserCredits({
-    userId: user?.sub,
-  });
+  } = useUserCredits();
 
   useEffect(() => {
     refreshBalance();
@@ -111,7 +109,8 @@ function Home() {
                         balanceLoading ? "opacity-50" : ""
                       }`}
                     >
-                      Chipps: {balanceLoading ? "loading..." : balance}
+                      Chipps:{" "}
+                      {balanceLoading ? "loading..." : userCredits?.balance}
                     </div>
                     <div className="text-xl font-bold text-center">
                       {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
