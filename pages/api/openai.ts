@@ -28,7 +28,7 @@ export default async function handler(
     }
 
     // See if the user has enough credits to send a message
-    const userChippBalance = await user.getChipps();
+    const userChippBalance = await user.getCredits();
     if (userChippBalance < 1) {
       // Get a payment URL for the user to add more credits
       const paymentURL = await user.getPaymentURL({
@@ -65,7 +65,7 @@ export default async function handler(
 
     // Deduct 1 credit from the user only if the message is sent successfully
     // so that we don't charge the user if the message fails to send
-    await user.deductChipps(1);
+    await user.deductCredits(1);
 
     res.status(200).json({
       content: completion.data.choices[0].message?.content,
