@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { Configuration, OpenAIApi } from "openai";
 import Chipp from "chipp";
 import { MessageModel } from "@chatscope/chat-ui-kit-react";
+import mockUserId from "@/utils/getMockUserId";
 const configuration = new Configuration({
   organization: process.env.ORG_ID as string,
   apiKey: process.env.OPEN_AI_API_KEY as string,
@@ -14,10 +15,10 @@ const chipp = new Chipp({
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   try {
-    const userId = req.cookies.userUUID;
+    const userId = mockUserId;
 
     const user = await chipp.getUser({ userId: userId as string });
     if (!user) {
@@ -56,10 +57,16 @@ export default async function handler(
       ...formattedMessageList,
     ];
 
-    const completion = await openai.createChatCompletion({
-      model: "gpt-4",
-      messages,
-    });
+    let completion;
+    try {
+      completion = await openai.createChatCompletion({
+        model: "gpt-4",
+        messages,
+      });
+    } catch (err: any) {
+      console.log(`error creating completion: ${JSON.stringify(err, null, 2)}`);
+      return;
+    }
 
     // Deduct 1 credit from the user only if the message is sent successfully
     // so that we don't charge the user if the message fails to send
