@@ -38,6 +38,7 @@ function Home() {
       }
     }
 
+    // Save messages to localStorage
     localStorage.setItem("messages", JSON.stringify(messageList));
   }, [messageList]);
 
