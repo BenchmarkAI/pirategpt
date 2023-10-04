@@ -11,14 +11,12 @@ import {
 } from "@chatscope/chat-ui-kit-react";
 import { useEffect, useState } from "react";
 import { MessageDirection } from "@chatscope/chat-ui-kit-react/src/types/unions";
-import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0/client";
 import { useUserCredits } from "@chipp/nextjs-chipp/client";
 
 function Home() {
   const [messageList, setMessageList] = useState<MessageModel[]>([]);
   const [msgInputValue, setMsgInputValue] = useState("");
   const [responseGenerating, setResponseGenerating] = useState(false);
-  const { user, isLoading } = useUser();
 
   const {
     userCredits,
@@ -101,9 +99,6 @@ function Home() {
                 />
                 <ConversationHeader.Actions>
                   <div className="flex gap-8">
-                    <div className="text-xl font-bold text-center">
-                      {isLoading ? "Loading..." : `User: ${user?.name}`}
-                    </div>
                     <div
                       className={`text-xl font-bold text-center ${
                         balanceLoading ? "opacity-50" : ""
@@ -111,10 +106,6 @@ function Home() {
                     >
                       Chipps:{" "}
                       {balanceLoading ? "loading..." : userCredits?.balance}
-                    </div>
-                    <div className="text-xl font-bold text-center">
-                      {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-                      <a href="/api/auth/logout">Logout</a>
                     </div>
                   </div>
                 </ConversationHeader.Actions>
@@ -145,4 +136,4 @@ function Home() {
   );
 }
 
-export default withPageAuthRequired(Home);
+export default Home;

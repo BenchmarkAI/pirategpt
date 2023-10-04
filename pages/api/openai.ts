@@ -1,4 +1,3 @@
-import { getSession } from "@auth0/nextjs-auth0";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Configuration, OpenAIApi } from "openai";
 import Chipp from "chipp";
@@ -18,8 +17,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
-    const session = await getSession(req, res);
-    const userId = session?.user?.sub;
+    const userId = req.cookies.userUUID;
 
     const user = await chipp.getUser({ userId: userId as string });
     if (!user) {
@@ -31,7 +29,7 @@ export default async function handler(
     const userChippBalance = await user.getCredits();
     if (userChippBalance < 1) {
       // Get a payment URL for the user to add more credits
-      const paymentURL = await user.getPaymentURL({
+      const paymentURL = await user.getPackagesURL({
         // Return the user to the homepage after they've paid
         // BASE_URL is set in .env to be the URL of the homepage
         returnToUrl: process.env.AUTH0_BASE_URL,
