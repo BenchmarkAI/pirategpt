@@ -32,7 +32,7 @@ export default async function handler(
       const paymentURL = await user.getPackagesURL({
         // Return the user to the homepage after they've paid
         // BASE_URL is set in .env to be the URL of the homepage
-        returnToUrl: process.env.AUTH0_BASE_URL,
+        returnToUrl: process.env.BASE_URL as string,
       });
       res.status(200).json({
         content: `You don't have enough credits to send a message. Please add more credits at ${paymentURL}`,
